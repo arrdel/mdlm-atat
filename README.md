@@ -268,7 +268,7 @@ See [docs/DATA_PATHS.md](docs/DATA_PATHS.md) for complete storage guide.
 
 If you use this work, please cite:
 
-```bibtex
+<!-- ```bibtex
 @article{chinda2024atat,
   title={Adaptive Time-Aware Token Masking for Masked Diffusion Language Models},
   author={Chinda, Adele},
@@ -284,7 +284,7 @@ If you use this work, please cite:
   booktitle={NeurIPS},
   year={2024}
 }
-```
+``` -->
 
 ---
 
@@ -326,8 +326,3 @@ du -sh /media/scratch/adele/*
 tensorboard --logdir /media/scratch/adele/mdlm_fresh/outputs
 ```
 
-**For more commands**: See [docs/reports/QUICK_REFERENCE.md](docs/reports/QUICK_REFERENCE.md)
-
----
-
-**🎯 Ready to start training? See [docs/RESTRUCTURING_GUIDE.md](docs/RESTRUCTURING_GUIDE.md) for next steps!**

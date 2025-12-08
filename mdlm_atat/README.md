@@ -205,11 +205,11 @@ x_t, uncertainty = model.uncertainty_guided_sample_step(
 )
 ```
 
-## 📚 Citation
+<!-- ## 📚 Citation
 
-If you use this code, please cite both the original MDLM paper and this extension:
+If you use this code, please cite both the original MDLM paper and this extension: -->
 
-```bibtex
+<!-- ```bibtex
 @inproceedings{sahoo2024simple,
   title={Simple and Effective Masked Diffusion Language Models},
   author={Sahoo, Subham and others},
@@ -221,7 +221,7 @@ If you use this code, please cite both the original MDLM paper and this extensio
   title={ATAT: Adaptive Time-Aware Token Masking for Masked Diffusion Language Models},
   author={Your Name},
   year={2024}
-}
+} -->
 ```
 
 ## 🤝 Contributing
