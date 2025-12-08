@@ -1,0 +1,163 @@
+<mxfile host="65bd71144e">
+    <diagram id="component-detail" name="ATAT Components Detail">
+        <mxGraphModel dx="1496" dy="731" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="ATAT Components: Detailed Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="400" y="20" width="800" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp1-container" value="1. Importance Estimator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=16;fontStyle=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="80" width="380" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp1-input" value="Input:&#xa;- Token embeddings (B, L, D)&#xa;- Timestep t" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="120" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp1-embed" value="Time Embedding&#xa;t → [sin(t), cos(t)] → MLP(256)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="200" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp1-tf1" value="Transformer Layer 1&#xa;4 heads, 256 dim, FFN 1024" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="270" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp1-tf2" value="Transformer Layer 2&#xa;4 heads, 256 dim, FFN 1024" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="340" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp1-head" value="Importance Head&#xa;Linear(256 → 1) + Sigmoid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="60" y="410" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp1-output" value="Output: Importance scores [0,1]&#xa;Shape: (B, L)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="140" y="490" width="180" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp2-container" value="2. Adaptive Masking Scheduler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=16;fontStyle=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="80" width="380" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp2-input" value="Input:&#xa;- Importance scores (B, L)&#xa;- Current timestep t&#xa;- Curriculum stage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="120" width="340" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp2-temp" value="Temperature Scaling&#xa;τ = f(stage)&#xa;τ_easy=2.0, τ_medium=1.0, τ_hard=0.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="210" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp2-softmax" value="Importance-Weighted Probabilities&#xa;p_mask = softmax(importance / τ)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="290" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp2-noise" value="Apply Noise Schedule&#xa;p_mask = p_mask * noise_rate(t)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="360" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp2-sample" value="Sample Masks&#xa;mask ~ Bernoulli(p_mask)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="480" y="430" width="340" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp2-output" value="Output: Binary masks&#xa;Shape: (B, L)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="560" y="490" width="180" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp3-container" value="3. Curriculum Learning" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=16;fontStyle=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="80" width="380" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp3-input" value="Input: Training step" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="120" width="340" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp3-stage" value="Determine Stage&#xa;step &lt; 33%: Easy (importance 0.0-0.4)&#xa;33% ≤ step &lt; 66%: Medium (0.3-0.7)&#xa;step ≥ 66%: Hard (0.6-1.0)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="180" width="340" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp3-weights" value="Compute Weights&#xa;w(token) = 2.0 if in range, else 1.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="280" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp3-sample-batch" value="Sample Curriculum Batch&#xa;Weighted sampling by importance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="350" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp3-adjust" value="Adjust Loss Weights&#xa;loss = loss * curriculum_weights" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="900" y="420" width="340" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp3-output" value="Output: Stage, weights" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="980" y="490" width="180" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-container" value="4. Uncertainty-Guided Sampler (Inference)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=16;fontStyle=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="560" width="1220" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-input" value="Input: Masked sequence&#xa;[MASK] [MASK] [MASK] ..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="600" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-predict" value="Model Prediction&#xa;logits = ATAT-DiT(x, t)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="600" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-entropy" value="Compute Uncertainty&#xa;H = -Σ p*log(p)&#xa;(entropy per masked token)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="600" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-select" value="Select High-Uncertainty Tokens&#xa;top-k by entropy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="900" y="600" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-denoise" value="Denoise Selected Tokens&#xa;Sample from softmax(logits)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="700" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-update" value="Update Sequence&#xa;Replace selected [MASK]s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="700" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-check" value="Convergence Check&#xa;avg(H) &lt; threshold?" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="700" width="240" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-continue" value="Continue Denoising" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="715" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-output" value="Output: Generated sequence&#xa;Fully denoised text" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="620" y="820" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="comp4-benefit" value="🎯 Benefit: 30% faster inference&#xa;by focusing on uncertain tokens&#xa;and early termination" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="820" width="520" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4a1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" parent="1" source="comp4-input" target="comp4-predict" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4a2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" parent="1" source="comp4-predict" target="comp4-entropy" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4a3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" parent="1" source="comp4-entropy" target="comp4-select" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4a4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="comp4-select" target="comp4-denoise" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1020" y="680"/>
+                            <mxPoint x="180" y="680"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c4a5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" parent="1" source="comp4-denoise" target="comp4-update" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4a6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" parent="1" source="comp4-update" target="comp4-check" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4a7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" parent="1" source="comp4-check" target="comp4-continue" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4a7-label" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c4a7" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c4a8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;dashed=1;" parent="1" source="comp4-continue" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1180" y="740"/>
+                            <mxPoint x="1180" y="570"/>
+                            <mxPoint x="450" y="570"/>
+                        </Array>
+                        <mxPoint x="450" y="600" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c4a8-label" value="Loop" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1" parent="c4a8" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+                        <mxPoint x="10" y="-55" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c4a9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;strokeWidth=2;" parent="1" source="comp4-check" target="comp4-output" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4a9-label" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c4a9" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

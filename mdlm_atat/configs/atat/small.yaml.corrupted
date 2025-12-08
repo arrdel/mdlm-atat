@@ -1,0 +1,368 @@
+# @package _global_# ATAT Small Model Configuration
+
+# Standalone config for ATAT training on scratch drive
+
+# ATAT Small Model Configuration
+
+# Standalone config for ATAT training on scratch drive# Basic settings
+
+mode: train
+
+defaults:diffusion: abs# LR scheduler settings
+
+  - /lr_scheduler: cosine_decay_warmuplr_scheduler:
+
+  _target_: utils.CosineDecayWarmupLRScheduler
+
+# Basic settings  t_in_epochs: False
+
+mode: train  t_initial: ${eval:${trainer.max_steps}-${.warmup_t}}
+
+diffusion: absorbing_state  warmup_prefix: True
+
+backbone: dit  warmup_lr_init: 1e-6
+
+parameterization: subs  warmup_t: 2000
+
+time_conditioning: False  lr_min: 1e-6ng_state
+
+T: 0backbone: dit
+
+subs_masking: Falseparameterization: subs
+
+seed: 1time_conditioning: False
+
+T: 0
+
+# Data configuration - uses scratch drivesubs_masking: False
+
+data:seed: 1
+
+  train: openwebtext
+
+  valid: wikitext103# Data configuration - uses scratch drive
+
+  tokenizer_name_or_path: gpt2data:
+
+  cache_dir: /media/scratch/adele/mdlm_fresh/data_cache  train: openwebtext
+
+  wrap: True  valid: wikitext103
+
+  streaming: False  tokenizer_name_or_path: gpt2
+
+  cache_dir: /media/scratch/adele/mdlm_fresh/data_cache
+
+# Model architecture (small DiT)  wrap: True
+
+model:  streaming: False
+
+  name: atat_dit
+
+  type: dit# Model architecture (small DiT)
+
+  length: 1024model:
+
+  hidden_size: 512  # Was 'dim', now matches DiT expectation  name: atat_dit
+
+  cond_dim: 128  type: ddit
+
+  n_blocks: 12  # Was 'n_layers', now matches DiT expectation  length: 1024
+
+  n_heads: 8  hidden_size: 512  # Was 'dim', now matches DiT expectation
+
+  scale_by_sigma: True  cond_dim: 128
+
+  dropout: 0.1  n_blocks: 12  # Was 'n_layers', now matches DiT expectation
+
+  tie_word_embeddings: False  n_heads: 8
+
+    scale_by_sigma: True
+
+  # ATAT-specific  dropout: 0.1
+
+  importance_hidden_dim: 256  tie_word_embeddings: False
+
+  importance_num_layers: 2  
+
+  masking_strategy: "importance"  # ATAT-specific
+
+  masking_temperature: 1.0  importance_hidden_dim: 256
+
+  position_bias: true  importance_num_layers: 2
+
+  use_importance: true  masking_strategy: "importance"
+
+  use_adaptive_masking: true  masking_temperature: 1.0
+
+  use_curriculum: true  position_bias: true
+
+  use_importance: true
+
+# Use ATAT components  use_adaptive_masking: true
+
+use_importance: true  use_curriculum: true
+
+use_adaptive_masking: true
+
+use_curriculum: true# Use ATAT components
+
+use_importance: true
+
+# Training settingsuse_adaptive_masking: true
+
+training:use_curriculum: true
+
+  ema: 0.9999
+
+  antithetic_sampling: True# Training settings
+
+  importance_sampling: Falsetraining:
+
+  sampling_eps: 1e-3  ema: 0.9999
+
+  change_of_variables: False  antithetic_sampling: True
+
+  importance_loss_weight: 0.1  importance_sampling: False
+
+  sampling_eps: 1e-3
+
+# Curriculum settings for small model  change_of_variables: False
+
+curriculum:  importance_loss_weight: 0.1
+
+  curriculum_type: "linear"
+
+  warmup_steps: 1000# Curriculum settings for small model
+
+  easy_fraction: 0.3curriculum:
+
+  hard_fraction: 0.3  curriculum_type: "linear"
+
+  dynamic_adjustment: false  warmup_steps: 1000
+
+  easy_fraction: 0.3
+
+# Loader settings  hard_fraction: 0.3
+
+loader:  dynamic_adjustment: false
+
+  global_batch_size: 510
+
+  eval_global_batch_size: ${.global_batch_size}# Loader settings
+
+  batch_size: 85loader:
+
+  eval_batch_size: 85  global_batch_size: 510
+
+  num_workers: ${eval:"len(__import__('os').sched_getaffinity(0))"}  eval_global_batch_size: ${.global_batch_size}
+
+  pin_memory: True  batch_size: 85
+
+  eval_batch_size: 85
+
+# Sampling settings  num_workers: ${eval:"len(__import__('os').sched_getaffinity(0))"}
+
+sampling:  pin_memory: True
+
+  predictor: ddpm_cache
+
+  steps: 128# Sampling settings
+
+  noise_removal: Truesampling:
+
+  num_sample_batches: 2  predictor: ddpm_cache
+
+  num_sample_log: 2  steps: 128
+
+  semi_ar: False  noise_removal: True
+
+  stride_length: 1  num_sample_batches: 2
+
+  num_strides: 1  num_sample_log: 2
+
+  semi_ar: False
+
+# Evaluation settings  stride_length: 1
+
+eval:  num_strides: 1
+
+  checkpoint_path: ''
+
+  disable_ema: False# Evaluation settings
+
+  compute_generative_perplexity: Falseeval:
+
+  perplexity_batch_size: 8  checkpoint_path: ''
+
+  compute_perplexity_on_sanity: False  disable_ema: False
+
+  gen_ppl_eval_model_name_or_path: gpt2-large  compute_generative_perplexity: False
+
+  generate_samples: True  perplexity_batch_size: 8
+
+  compute_perplexity_on_sanity: False
+
+# Optimizer settings  gen_ppl_eval_model_name_or_path: gpt2-large
+
+optim:  generate_samples: True
+
+  weight_decay: 0
+
+  lr: 3e-4# Optimizer settings
+
+  beta1: 0.9optim:
+
+  beta2: 0.999  weight_decay: 0
+
+  eps: 1e-8  lr: 3e-4
+
+  beta1: 0.9
+
+# Trainer settings  beta2: 0.999
+
+trainer:  eps: 1e-8
+
+  _target_: lightning.Trainer
+
+  accelerator: cuda# Trainer settings
+
+  num_nodes: 1trainer:
+
+  devices: ${device_count:}  _target_: lightning.Trainer
+
+  accumulate_grad_batches: 1  accelerator: cuda
+
+  gradient_clip_val: 1.0  num_nodes: 1
+
+  precision: 'bf16'  devices: ${device_count:}
+
+  num_sanity_val_steps: 2  accumulate_grad_batches: 1
+
+  max_steps: 100000  gradient_clip_val: 1.0
+
+  log_every_n_steps: 100  precision: 'bf16'
+
+  limit_train_batches: 1.0  num_sanity_val_steps: 2
+
+  limit_val_batches: 1.0  max_steps: 100000
+
+  val_check_interval: 5000  log_every_n_steps: 100
+
+  limit_train_batches: 1.0
+
+# Strategy settings  limit_val_batches: 1.0
+
+strategy:  val_check_interval: 5000
+
+  _target_: lightning.pytorch.strategies.DDPStrategy
+
+  find_unused_parameters: false# Strategy settings
+
+strategy:
+
+# Noise settings  _target_: lightning.pytorch.strategies.DDPStrategy
+
+noise:  find_unused_parameters: false
+
+  type: loglinear
+
+  sigma_min: 1e-4# Noise settings
+
+  sigma_max: 20noise:
+
+  type: loglinear
+
+# Callbacks  sigma_min: 1e-4
+
+callbacks:  sigma_max: 20
+
+  checkpoint_monitor:
+
+    _target_: lightning.pytorch.callbacks.ModelCheckpoint# LR scheduler settings
+
+    monitor: val/nlllr_scheduler:
+
+    mode: min  type: cosine_decay_warmup
+
+    save_top_k: 1  warmup_steps: 1000
+
+    save_last: False
+
+    dirpath: ${checkpointing.save_dir}/checkpoints# Callbacks
+
+    filename: bestcallbacks:
+
+    auto_insert_metric_name: False  checkpoint_monitor:
+
+    verbose: True    _target_: lightning.pytorch.callbacks.ModelCheckpoint
+
+    monitor: val/nll
+
+# W&B settings    mode: min
+
+wandb:    save_top_k: 1
+
+  project: mdlm-atat    save_last: False
+
+  notes: ATAT training - small model with importance estimation, adaptive masking, and curriculum learning    dirpath: ${checkpointing.save_dir}/checkpoints
+
+  group: atat-experiments    filename: best
+
+  job_type: training    auto_insert_metric_name: False
+
+  name: atat_owt_small    verbose: True
+
+  id: ${.name}_${seed}
+
+  offline: false# W&B settings
+
+  tags:wandb:
+
+    - loglinear  project: mdlm-atat
+
+    - openwebtext  notes: ATAT training - small model with importance estimation, adaptive masking, and curriculum learning
+
+    - atat  group: atat-experiments
+
+    - small  job_type: training
+
+    - importance-estimation  name: atat_owt_small
+
+    - adaptive-masking  id: ${.name}_${seed}
+
+    - curriculum-learning  offline: false
+
+  tags:
+
+# Hydra settings - outputs to scratch drive    - loglinear
+
+hydra:    - openwebtext
+
+  run:    - atat
+
+    dir: /media/scratch/adele/mdlm_fresh/outputs/${data.train}/${now:%Y.%m.%d}/${now:%H%M%S}    - small
+
+  job:    - importance-estimation
+
+    chdir: true    - adaptive-masking
+
+    - curriculum-learning
+
+# Checkpointing settings
+
+checkpointing:# Hydra settings - outputs to scratch drive
+
+  save_dir: ${cwd:}hydra:
+
+  resume_from_ckpt: true  run:
+
+  resume_ckpt_path: ${.save_dir}/checkpoints/last.ckpt    dir: /media/scratch/adele/mdlm_fresh/outputs/${data.train}/${now:%Y.%m.%d}/${now:%H%M%S}
+
+  job:
+    chdir: true
+
+# Checkpointing settings
+checkpointing:
+  save_dir: ${cwd:}
+  resume_from_ckpt: true
+  resume_ckpt_path: ${.save_dir}/checkpoints/last.ckpt
