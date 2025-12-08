@@ -1,0 +1,114 @@
+# @package _global_
+
+# ATAT Production Training Configuration
+# Full training on OpenWebText (500k steps)
+# Expected duration: 1-2 weeks on 6x RTX 4090
+
+defaults:
+  - /lr_scheduler: cosine_decay_warmup
+
+# Basic settings
+mode: train
+diffusion: absorbing_state    # Discrete masking (CRITICAL!)
+backbone: dit
+parameterization: subs        # Substitute masking
+time_conditioning: False
+T: 0
+subs_masking: False
+seed: 42
+
+# Data configuration - OpenWebText for production
+# IMPORTANT: No manual splitting needed!
+# HuggingFace automatically provides train/validation splits
+data:
+  train: openwebtext          # Automatically uses train split
+  valid: openwebtext          # Automatically uses validation split
+  tokenizer_name_or_path: gpt2
+  cache_dir: /media/scratch/adele/mdlm_fresh/data_cache
+  wrap: True
+  streaming: False
+
+# Model configuration - Full BERT scale (same as validation, production-ready)
+model:
+  name: atat_dit
+  type: dit
+  length: 1024                # 1K token sequences
+  hidden_size: 768            # Full BERT hidden dimension
+  cond_dim: 128
+  n_blocks: 12                # Full BERT depth
+  n_heads: 12                 # Full BERT heads
+  scale_by_sigma: True
+  dropout: 0.1
+  tie_word_embeddings: False
+  importance_hidden_dim: 256  # Importance estimator hidden size
+  importance_num_layers: 2    # 2-layer importance estimator
+  masking_strategy: "importance"
+  masking_temperature: 1.0
+  position_bias: false
+  use_importance: true        # Enable importance estimation
+  use_adaptive_masking: true  # Enable adaptive masking
+  use_curriculum: true        # Enable curriculum learning
+
+# ATAT components - All enabled for production
+use_importance: true
+use_adaptive_masking: true
+use_curriculum: true
+
+# Training settings
+training:
+  ema: 0.9999
+  antithetic_sampling: True
+  importance_sampling: False
+  sampling_eps: 1e-3
+  change_of_variables: False
+  importance_loss_weight: 0.1
+
+# Curriculum settings for full training
+# Start easy (many masks) → progress to hard (few masks)
+curriculum:
+  curriculum_type: "linear"
+  warmup_steps: 5000           # Longer warmup for 500k steps (1% of total)
+  easy_fraction: 0.3           # 30% of sequence can be easy early on
+  hard_fraction: 0.3           # 30% stays hard throughout
+  dynamic_adjustment: false
+
+# Loader settings - Production scale
+# IMPORTANT: dataloader.py uses torch.cuda.device_count() (all available GPUs)
+# global_batch_size = batch_size × num_gpus × accumulation_steps
+# With 6 GPUs and batch_size=4: global_batch_size = 4 × 6 × 1 = 24
+loader:
+  global_batch_size: 24
+  eval_global_batch_size: ${.loader.global_batch_size}
+  batch_size: 4                 # Per-GPU batch size (4 × 6 = 24 global)
+  eval_batch_size: 4            # Evaluation batch size
+  num_workers: 8                # Data loading workers
+  pin_memory: true              # Pin memory for faster GPU transfer
+  persistent_workers: true      # Keep workers alive between epochs
+
+# Training hyperparameters
+max_steps: 500000              # 500k steps for full training
+val_check_interval: 1000       # Validate every 1000 steps
+log_interval: 100              # Log metrics every 100 steps
+save_interval: 5000            # Save checkpoint every 5000 steps
+
+# Learning rate schedule
+learning_rate: 1e-4
+weight_decay: 0.01
+warmup_steps: 5000             # Warmup for first 5000 steps
+
+# Optimization
+grad_accumulation_steps: 1      # No gradient accumulation (batch size sufficient)
+grad_clip_norm: 1.0            # Clip gradients to prevent exploding
+
+# Device settings
+precision: bf16                # Mixed precision training (saves memory/faster)
+enable_gradient_checkpointing: true  # Reduce memory usage at slight compute cost
+
+# Checkpoint settings
+save_top_k: 5                  # Keep top 5 checkpoints
+monitor: val_loss              # Monitor validation loss for best model
+mode: min                      # Minimize validation loss
+
+# Logging
+log_dir: /media/scratch/adele/mdlm_fresh/logs
+checkpoint_dir: /media/scratch/adele/mdlm_fresh/checkpoints
