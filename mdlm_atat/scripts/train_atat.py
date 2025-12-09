@@ -140,7 +140,7 @@ def main():
         "--config-name",
         type=str,
         default="atat/tiny",
-        choices=["atat/tiny", "atat/small", "atat/wikitext103_validation"],
+        choices=["atat/tiny", "atat/small", "atat/wikitext103_validation", "atat/production_training"],
         help="Model configuration"
     )
     

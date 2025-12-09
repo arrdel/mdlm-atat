@@ -63,7 +63,7 @@
 ├────────────────────────────────────────────────────────┤
 │                                                        │
 │  1. Importance Estimator                              │
-│     → Learns which tokens are hard to predict         │
+│     → Learns which tokens are hard to predict         │ 
 │                                                        │
 │  2. Adaptive Masking                                  │
 │     → Adjusts masking based on importance             │
