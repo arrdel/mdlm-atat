@@ -69,7 +69,7 @@ temp/
 model_*.bin
 
 trash/
-docs/archived_reports
+docs/archived_report
 docs/archived_latex
 docs/figures
 
