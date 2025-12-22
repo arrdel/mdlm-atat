@@ -1,0 +1,219 @@
+nohup: ignoring input
+
+[0;34m============================================================[0m
+[0;34m               MDLM ATAT Training with WandB                [0m
+[0;34m============================================================[0m
+
+[0;32m✓[0m Datasets found in: /media/scratch/adele/mdlm_fresh/data_cache
+
+[0;36mChecking WandB authentication...[0m
+[1;33mWandB not logged in. Running in offline mode...[0m
+
+[0;36mChecking GPU availability...[0m
+[0;32m✓[0m Found 6 GPUs
+  GPU 0: NVIDIA GeForce RTX 4090 (24564 MiB total, 24108 MiB free)
+  GPU 1: NVIDIA GeForce RTX 4090 (24564 MiB total, 24108 MiB free)
+  GPU 2: NVIDIA GeForce RTX 4090 (24564 MiB total, 24110 MiB free)
+  GPU 3: NVIDIA GeForce RTX 4090 (24564 MiB total, 24110 MiB free)
+  GPU 4: NVIDIA GeForce RTX 4090 (24564 MiB total, 24110 MiB free)
+  GPU 5: NVIDIA GeForce RTX 4090 (24564 MiB total, 24110 MiB free)
+
+[0;34mTraining Configuration:[0m
+  Model: [0;32matat/wikitext103_validation[0m
+  Max steps: [0;32m50000[0m
+  Validation interval: [0;32m5000[0m
+  Batch size: [0;32m85[0m
+  Learning rate: [0;32m0.0003[0m
+  GPUs: [0;32m2[0m
+  Log file: [0;32m/media/scratch/adele/mdlm_fresh/logs/training_20251208_061857.log[0m
+  Run name: [0;32matat_owt_20251208_061857[0m
+
+[0;34m============================================================[0m
+[0;34m                    Starting Training...                    [0m
+[0;34m============================================================[0m
+
+Monitor training:
+  [0;36mLogs:[0m   tail -f /media/scratch/adele/mdlm_fresh/logs/training_20251208_061857.log
+  [0;36mGPUs:[0m   watch -n 1 nvidia-smi
+  [0;36mWandB:[0m  https://wandb.ai
+
+/home/adelechinda/miniconda3/envs/mdlm-atat/lib/python3.9/site-packages/lightning/fabric/__init__.py:41: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+/home/adelechinda/miniconda3/envs/mdlm-atat/lib/python3.9/site-packages/hydra/_internal/defaults_list.py:251: UserWarning: In 'atat/wikitext103_validation': Defaults list is missing `_self_`. See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information
+  warnings.warn(msg, UserWarning)
+Warning: causal_conv1d not available, skipping dimamba import
+Seed set to 42
+CONFIG
+├── lr_scheduler
+│   └── _target_: utils.CosineDecayWarmupLRScheduler                            
+│       t_in_epochs: false                                                      
+│       t_initial: 45000.0                                                      
+│       warmup_prefix: true                                                     
+│       warmup_lr_init: 1.0e-06                                                 
+│       warmup_t: 5000.0                                                        
+│       lr_min: 1.0e-06                                                         
+│                                                                               
+├── mode
+│   └── train                                                                   
+├── diffusion
+│   └── absorbing_state                                                         
+├── backbone
+│   └── dit                                                                     
+├── parameterization
+│   └── subs                                                                    
+├── time_conditioning
+│   └── False                                                                   
+├── T
+│   └── 0                                                                       
+├── subs_masking
+│   └── False                                                                   
+├── seed
+│   └── 42                                                                      
+├── data
+│   └── train: wikitext103-v1                                                   
+│       valid: wikitext103-v1                                                   
+│       tokenizer_name_or_path: gpt2                                            
+│       cache_dir: /media/scratch/adele/mdlm_fresh/data_cache                   
+│       wrap: true                                                              
+│       streaming: false                                                        
+│                                                                               
+├── model
+│   └── name: atat_dit                                                          
+│       type: dit                                                               
+│       length: 1024                                                            
+│       hidden_size: 768                                                        
+│       cond_dim: 128                                                           
+│       n_blocks: 12                                                            
+│       n_heads: 12                                                             
+│       scale_by_sigma: true                                                    
+│       dropout: 0.1                                                            
+│       tie_word_embeddings: false                                              
+│       importance_hidden_dim: 256                                              
+│       importance_num_layers: 2                                                
+│       masking_strategy: importance                                            
+│       masking_temperature: 1.0                                                
+│       position_bias: false                                                    
+│       use_importance: true                                                    
+│       use_adaptive_masking: true                                              
+│       use_curriculum: true                                                    
+│                                                                               
+├── use_importance
+│   └── True                                                                    
+├── use_adaptive_masking
+│   └── True                                                                    
+├── use_curriculum
+│   └── True                                                                    
+├── training
+│   └── ema: 0.9999                                                             
+│       antithetic_sampling: true                                               
+│       importance_sampling: false                                              
+│       sampling_eps: 0.001                                                     
+│       change_of_variables: false                                              
+│       importance_loss_weight: 0.1                                             
+│                                                                               
+├── curriculum
+│   └── curriculum_type: linear                                                 
+│       warmup_steps: 1000                                                      
+│       easy_fraction: 0.3                                                      
+│       hard_fraction: 0.3                                                      
+│       dynamic_adjustment: false                                               
+│                                                                               
+├── loader
+│   └── global_batch_size: 64                                                   
+│       eval_global_batch_size: 64                                              
+│       batch_size: 85                                                          
+│       eval_batch_size: 8                                                      
+│       num_workers: 32                                                         
+│       pin_memory: true                                                        
+│                                                                               
+├── sampling
+│   └── predictor: ddpm_cache                                                   
+│       steps: 128                                                              
+│       noise_removal: true                                                     
+│       num_sample_batches: 2                                                   
+│       num_sample_log: 2                                                       
+│       semi_ar: false                                                          
+│       stride_length: 1                                                        
+│       num_strides: 1                                                          
+│                                                                               
+├── eval
+│   └── checkpoint_path: ''                                                     
+│       disable_ema: false                                                      
+│       compute_generative_perplexity: true                                     
+│       perplexity_batch_size: 8                                                
+│       compute_perplexity_on_sanity: false                                     
+│       gen_ppl_eval_model_name_or_path: gpt2-large                             
+│       generate_samples: true                                                  
+│                                                                               
+├── optim
+│   └── weight_decay: 0.01                                                      
+│       lr: 0.0003                                                              
+│       beta1: 0.9                                                              
+│       beta2: 0.999                                                            
+│       eps: 1.0e-08                                                            
+│                                                                               
+├── trainer
+│   └── _target_: lightning.Trainer                                             
+│       accelerator: cuda                                                       
+│       num_nodes: 1                                                            
+│       devices: 2                                                              
+│       accumulate_grad_batches: 1                                              
+│       gradient_clip_val: 1.0                                                  
+│       precision: bf16                                                         
+│       num_sanity_val_steps: 2                                                 
+│       max_steps: 50000                                                        
+│       log_every_n_steps: 100                                                  
+│       limit_train_batches: 1.0                                                
+│       limit_val_batches: 1.0                                                  
+│       val_check_interval: 5000                                                
+│                                                                               
+├── strategy
+│   └── _target_: lightning.pytorch.strategies.DDPStrategy                      
+│       find_unused_parameters: false                                           
+│                                                                               
+├── noise
+│   └── type: loglinear                                                         
+│       sigma_min: 0.0001                                                       
+│       sigma_max: 20                                                           
+│                                                                               
+├── callbacks
+│   └── checkpoint_monitor:                                                     
+│         _target_: lightning.pytorch.callbacks.ModelCheckpoint                 
+│         monitor: val/nll                                                      
+│         mode: min                                                             
+│         save_top_k: 1                                                         
+│         save_last: false                                                      
+│         dirpath: /media/scratch/adele/mdlm_fresh/checkpoints/checkpoints      
+│         filename: best                                                        
+│         auto_insert_metric_name: false                                        
+│         verbose: true                                                         
+│                                                                               
+└── checkpointing
+    └── save_dir: /media/scratch/adele/mdlm_fresh/checkpoints                   
+        resume_from_ckpt: false                                                 
+        resume_ckpt_path: /media/scratch/adele/mdlm_fresh/checkpoints/checkpoint
+                                                                                
+/home/adelechinda/miniconda3/envs/mdlm-atat/lib/python3.9/site-packages/huggingface_hub/file_download.py:942: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+[2025-12-08 06:19:01,408][__main__][INFO] - Starting Training.
+Error executing job with overrides: ['trainer.max_steps=50000', 'trainer.val_check_interval=5000', 'trainer.log_every_n_steps=100', 'trainer.accelerator=cuda', 'trainer.devices=2', 'loader.batch_size=85', 'optim.lr=0.0003', 'data.cache_dir=/media/scratch/adele/mdlm_fresh/data_cache']
+Traceback (most recent call last):
+  File "/home/adelechinda/home/projects/mdlm/mdlm_atat/../mdlm/main.py", line 201, in main
+    _train(config, logger, tokenizer)
+  File "/home/adelechinda/home/projects/mdlm/mdlm_atat/../mdlm/main.py", line 170, in _train
+    train_ds, valid_ds = dataloader.get_dataloaders(
+  File "/home/adelechinda/home/projects/mdlm/mdlm/dataloader.py", line 528, in get_dataloaders
+    assert (config.loader.global_batch_size
+AssertionError
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+
+[0;34m============================================================[0m
+[0;34m                      Training Failed                       [0m
+[0;34m============================================================[0m
+
+[0;31mTraining failed with exit code: 1[0m
+
+Training logs: [0;32m/media/scratch/adele/mdlm_fresh/logs/training_20251208_061857.log[0m
+Output directory: [0;32m/media/scratch/adele/mdlm_fresh/outputs[0m
+WandB dashboard: [0;36mhttps://wandb.ai[0m
+

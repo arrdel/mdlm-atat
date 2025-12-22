@@ -94,7 +94,7 @@ class AdaptiveMaskingScheduler(nn.Module):
             # Linear schedule: mask more at early timesteps
             return t
         elif self.curriculum_schedule == 'cosine':
-            # Cosine schedule: smoother transition
+            # Cosine schedule: smoother transition 
             return 0.5 * (1 + torch.cos(np.pi * (1 - t)))
         elif self.curriculum_schedule == 'log':
             # Logarithmic: mask heavily early, taper off

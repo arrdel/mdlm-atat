@@ -1,10 +1,11 @@
 # @package _global_
-# Phase 1A: Variant 4 - Uniform Baseline (No Importance)
+# Importance Ablation: Variant 4 - Uniform Baseline (No Importance)
 # Expected PPL: 42.31 (+3.28 vs full)
 # Tests: Whether adaptive masking concept is sound
 
 defaults:
-  - phase1a_base
+  - importance_ablation_base
+  - _self_
 
 # Override key parameters for this variant
 model:

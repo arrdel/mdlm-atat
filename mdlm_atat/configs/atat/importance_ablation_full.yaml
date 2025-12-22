@@ -1,9 +1,10 @@
 # @package _global_
-# Phase 1A: Variant 1 - Full ATAT (Learned + Frequency Prior)
+# Importance Ablation: Variant 1 - Full ATAT (Learned + Frequency Prior)
 # Expected PPL: 39.03 (baseline)
 
 defaults:
-  - phase1a_base
+  - importance_ablation_base
+  - _self_
 
 # Override key parameters for this variant
 model:

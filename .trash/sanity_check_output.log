@@ -1,0 +1,9 @@
+usage: train_atat.py [-h] [--config-name {atat/tiny,atat/small}]
+                     [--max-steps MAX_STEPS] [--val-interval VAL_INTERVAL]
+                     [--log-interval LOG_INTERVAL] [--num-gpus NUM_GPUS]
+                     [--batch-size BATCH_SIZE] [--learning-rate LEARNING_RATE]
+                     [--cache-dir CACHE_DIR] [--output-dir OUTPUT_DIR]
+                     [--log-dir LOG_DIR] [--wandb-project WANDB_PROJECT]
+                     [--wandb-run-name WANDB_RUN_NAME] [--wandb-offline]
+                     [--no-confirm] [--resume RESUME]
+train_atat.py: error: argument --config-name: invalid choice: 'atat/wikitext103_validation' (choose from 'atat/tiny', 'atat/small')

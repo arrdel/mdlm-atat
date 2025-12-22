@@ -1,0 +1,166 @@
+<mxfile host="65bd71144e">
+    <diagram id="file-structure" name="File Structure">
+        <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1400" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Project File Structure" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="300" y="20" width="600" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="root" value="mdlm/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=14;fontStyle=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="80" width="1120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-folder" value="mdlm/ Base MDLM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=12;fontStyle=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="150" width="340" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-main" value="main.py - Training entry" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="190" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-diffusion" value="diffusion.py - SUBS D3PM SEDD" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="230" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-noise" value="noise_schedule.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="270" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-dataloader" value="dataloader.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="310" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-models-folder" value="models/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="80" y="350" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-dit" value="  dit.py - DiT architecture" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="380" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-dimamba" value="  dimamba.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="405" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-ar" value="  autoregressive.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="430" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-configs" value="configs/ - Hydra configs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="80" y="465" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="mdlm-scripts" value="scripts/ - Train eval scripts" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="80" y="505" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-folder" value="mdlm_atat/ ATAT Extension" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontSize=12;fontStyle=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="420" y="150" width="340" height="550" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-readme" value="README.md" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="190" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-setup" value="setup.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="230" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-atat-folder" value="atat/ Core components" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="440" y="270" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-importance" value="  importance_estimator.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="300" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-masking" value="  adaptive_masking.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="325" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-curriculum" value="  curriculum.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="350" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-uncertainty" value="  uncertainty_sampler.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="375" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-models-folder" value="models/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="440" y="410" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-dit" value="  atat_dit.py - ATAT-DiT model" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="440" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-configs-folder" value="configs/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="440" y="475" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-tiny" value="  atat/tiny.yaml" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="505" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-small" value="  atat/small.yaml" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="530" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-scripts-folder" value="scripts/ Training eval" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="440" y="565" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-train" value="  train_atat.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="595" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-eval" value="  eval_atat.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="620" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="atat-tests" value="tests/ Unit tests" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="440" y="655" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-folder" value="docs/ Documentation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;fontSize=12;fontStyle=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="780" y="150" width="380" height="550" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-index" value="INDEX.md - Doc index" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="190" width="340" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-restructure" value="RESTRUCTURING_GUIDE.md" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="230" width="340" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-data" value="DATA_PATHS.md" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="270" width="340" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-paper" value="research_proposal.tex" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="310" width="340" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-reports" value="reports/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="800" y="350" width="340" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-exec" value="  EXECUTIVE_SUMMARY.md" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="380" width="340" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-tech" value="  TECHNICAL_REPORT.md" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="405" width="340" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-getting" value="  GETTING_STARTED.md" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="430" width="340" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-figures" value="figures/ NEW Diagrams" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="800" y="465" width="340" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-fig1" value="  01_system_architecture.drawio" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="495" width="340" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-fig2" value="  02_training_flow.drawio" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="520" width="340" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-fig3" value="  03_component_details.drawio" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=9;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="545" width="340" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-fig4" value="  04_data_flow.drawio FIXED" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=9;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="800" y="570" width="340" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs-fig5" value="  05_file_structure.drawio FIXED" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=9;align=left;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="800" y="595" width="340" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="scratch-section" value="External Storage media/scratch/adele/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;fontSize=12;fontStyle=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="750" width="1100" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="scratch-cache" value="mdlm_data_cache/&#xa;47GB HF cache" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="800" width="200" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="scratch-fresh" value="mdlm_fresh/&#xa;321GB outputs" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="330" y="800" width="200" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="scratch-datasets" value="datasets/&#xa;50GB raw data" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="570" y="800" width="200" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="scratch-wandb" value="WandB Logs&#xa;Cloud sync" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="810" y="800" width="200" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="summary-box" value="Summary Statistics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontSize=14;fontStyle=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1000" width="1100" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="sum-text" value="Core Modules: 4 | Training Scripts: 8 | Config Files: 10+ | Documentation: 20+ | Total LOC: ~3500 | Storage: 418GB" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="1040" width="1060" height="80" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

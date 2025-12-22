@@ -85,3 +85,13 @@ mdlm/*.pdf
 # Original baseline files (if present)
 baseline/
 original_mdlm/
+
+# Ignore all notes
+--- IGNORE ---
+*.md
+*.txt
+*.rst
+!README.md  
+
+report/
+sample/

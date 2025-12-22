@@ -1,10 +1,11 @@
 # @package _global_
-# Phase 1A: Variant 3 - Learned-Only (No Frequency Prior)
+# Importance Ablation: Variant 3 - Learned-Only (No Frequency Prior)
 # Expected PPL: 40.12 (+1.09 vs full)
 # Tests: Contextual importance learned by transformer
 
 defaults:
-  - phase1a_base
+  - importance_ablation_base
+  - _self_
 
 # Override key parameters for this variant
 model:

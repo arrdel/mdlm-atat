@@ -140,7 +140,18 @@ def main():
         "--config-name",
         type=str,
         default="atat/tiny",
-        choices=["atat/tiny", "atat/small", "atat/wikitext103_validation", "atat/production_training"],
+        choices=[
+            "atat/tiny", 
+            "atat/small", 
+            "atat/wikitext103_validation", 
+            "atat/production_training",
+            # Importance Ablation Study: Importance Estimator Variants
+            "atat/importance_ablation_base",
+            "atat/importance_ablation_full",
+            "atat/importance_ablation_frequency_only",
+            "atat/importance_ablation_learned_only",
+            "atat/importance_ablation_uniform",
+        ],
         help="Model configuration"
     )
     

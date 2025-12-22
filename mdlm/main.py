@@ -8,9 +8,9 @@ import rich.syntax
 import rich.tree
 import torch
 
-import dataloader
-import diffusion
-import utils
+from . import dataloader
+from . import diffusion
+from . import utils
 
 omegaconf.OmegaConf.register_new_resolver(
   'cwd', os.getcwd)

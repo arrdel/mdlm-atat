@@ -16,7 +16,7 @@ import tokenizers
 import torch
 import transformers
 
-import utils
+from . import utils
 
 LOGGER = utils.get_logger(__name__)
 

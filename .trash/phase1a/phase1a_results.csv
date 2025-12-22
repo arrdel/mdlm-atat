@@ -1,0 +1,5 @@
+variant,val_ppl,train_loss,oracle_correlation,status
+full,39.03,,0.82,Expected (not yet trained)
+frequency_only,41.87,,0.71,Expected (not yet trained)
+learned_only,40.12,,0.79,Expected (not yet trained)
+uniform,42.31,,,Expected (not yet trained)

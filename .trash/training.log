@@ -1,0 +1,10 @@
+nohup: ignoring input
+
+[0;34m============================================================[0m
+[0;34m               MDLM ATAT Training with WandB                [0m
+[0;34m============================================================[0m
+
+[0;32m✓[0m Datasets found in: /media/scratch/adele/mdlm_fresh/data_cache
+
+[0;36mChecking WandB authentication...[0m
+[1;33mWandB not logged in. Please run: wandb login[0m

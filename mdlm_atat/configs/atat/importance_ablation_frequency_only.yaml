@@ -1,10 +1,11 @@
 # @package _global_
-# Phase 1A: Variant 2 - Frequency-Only (No Learned Component)
+# Importance Ablation: Variant 2 - Frequency-Only (No Learned Component)
 # Expected PPL: 41.87 (+2.84 vs full)
 # Tests: Statistical token frequency as importance baseline
 
 defaults:
-  - phase1a_base
+  - importance_ablation_base
+  - _self_
 
 # Override key parameters for this variant
 model:

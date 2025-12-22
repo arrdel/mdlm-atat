@@ -135,15 +135,35 @@ noise: loglinear
 # LR scheduler settings
 lr_scheduler: cosine_decay_warmup
 
-# Checkpointing
-checkpoint:
-  save_top_k: 3  # Keep top 3 checkpoints
-  save_interval: 50000  # Save every 50K steps
-  resume_from_checkpoint: null
+# Callbacks for checkpointing
+callbacks:
+  checkpoint_monitor:
+    _target_: lightning.pytorch.callbacks.ModelCheckpoint
+    monitor: val/nll
+    mode: min
+    save_top_k: 5
+    save_last: True
+    dirpath: ${checkpointing.save_dir}/checkpoints
+    filename: atat_importance_ablation
+    auto_insert_metric_name: False
+    verbose: True
+
+# Checkpointing settings
+checkpointing:
+  save_dir: /media/scratch/adele/mdlm_fresh/outputs/importance_ablation
+  resume_from_ckpt: false
+  resume_ckpt_path: ${.save_dir}/checkpoints/last.ckpt
 
 # Logging
 wandb:
-  project: "mdlm-atat-phase1a"
+  project: "mdlm-atat-importance-ablation"
   entity: null  # Set to your entity if needed
-  tags: ["phase1a", "ablation"]
-  notes: "Phase 1A: Importance Estimator Variants"
+  tags: ["importance_ablation", "ablation"]
+  notes: "Importance Estimator Variants Ablation Study"
+
+# Hydra settings for outputs
+hydra:
+  run:
+    dir: /media/scratch/adele/mdlm_fresh/outputs/importance_ablation/${now:%Y.%m.%d}/${now:%H%M%S}
+  job:
+    chdir: true

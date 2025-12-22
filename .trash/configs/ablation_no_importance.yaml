@@ -1,0 +1,15 @@
+# Ablation Study: No Importance Estimation
+# Baseline MDLM without ATAT enhancements
+
+defaults:
+  - /model/tiny
+  - /atat/atat_config
+  - _self_
+
+# Disable ATAT components
+use_importance: false
+use_adaptive_masking: false
+use_curriculum: false
+
+model:
+  name: dit  # Use baseline DiT instead of ATATDiT
