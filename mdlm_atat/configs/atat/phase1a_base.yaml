@@ -1,0 +1,149 @@
+# @package _global_
+# Phase 1A: Importance Estimator Variants - Base Configuration
+# This is a base config used by all 4 variant configurations
+# Variants override the importance_mode parameter
+
+defaults:
+  - /lr_scheduler: cosine_decay_warmup
+
+# Basic settings (production-scale)
+mode: train
+diffusion: absorbing_state
+backbone: dit
+parameterization: subs
+time_conditioning: False
+T: 0
+subs_masking: False
+seed: 42  # Fixed seed for reproducibility
+
+# Data configuration - OpenWebText (262B tokens)
+data:
+  train: openwebtext
+  valid: openwebtext
+  tokenizer_name_or_path: gpt2
+  cache_dir: /media/scratch/adele/mdlm_fresh/data_cache
+  wrap: True
+  streaming: False
+
+# Model configuration - 110M params (small variant)
+model:
+  name: atat_dit
+  type: dit
+  length: 1024
+  hidden_size: 512  # 110M params baseline
+  cond_dim: 256
+  n_blocks: 12
+  n_heads: 8
+  scale_by_sigma: True
+  dropout: 0.1
+  tie_word_embeddings: False
+  
+  # ATAT-specific settings
+  importance_hidden_dim: 256
+  importance_num_layers: 2
+  masking_strategy: "balanced"  # balanced, proportional, or inverse
+  masking_temperature: 1.0
+  position_bias: false
+  
+  # Core ATAT components
+  use_importance: true
+  use_adaptive_masking: true
+  use_curriculum: true
+  
+  # **VARIANT OVERRIDE**: Set via command line or specific config file
+  # Options: "full", "frequency_only", "learned_only", "none"
+  importance_mode: "full"
+
+# Training settings
+training:
+  ema: 0.9999
+  antithetic_sampling: True
+  importance_sampling: False
+  sampling_eps: 1e-3
+  change_of_variables: False
+  importance_loss_weight: 0.1
+
+# Curriculum settings - 3-stage curriculum over 500K steps
+curriculum:
+  curriculum_type: "linear"
+  warmup_steps: 10000  # Warmup for 10K steps
+  easy_fraction: 0.3   # 0-150K steps (easy)
+  medium_fraction: 0.4 # 150K-350K steps (medium)
+  hard_fraction: 0.3   # 350K-500K steps (hard)
+  dynamic_adjustment: false
+  importance_quantile_easy: 0.3   # Bottom 30% importance = easy
+  importance_quantile_hard: 0.7   # Top 30% importance = hard
+
+# Loader settings - 512 global batch size = 8 A100 GPUs * 64 per-GPU batch
+# For 8 GPUs: 512 / 8 = 64 per-GPU batch
+loader:
+  global_batch_size: 512
+  eval_global_batch_size: ${.global_batch_size}
+  batch_size: 64  # Per-GPU batch size (512 / 8 GPUs = 64)
+  eval_batch_size: 64
+  num_workers: ${eval:"len(__import__('os').sched_getaffinity(0))"}
+  pin_memory: True
+
+# Sampling settings
+sampling:
+  predictor: ddpm_cache
+  steps: 128
+  noise_removal: True
+  num_sample_batches: 2
+  num_sample_log: 2
+  semi_ar: False
+  stride_length: 1
+  num_strides: 1
+
+# Evaluation settings
+eval:
+  checkpoint_path: ''
+  disable_ema: False
+  compute_generative_perplexity: False  # Can enable for final evaluation
+  perplexity_batch_size: 64
+  compute_perplexity_on_sanity: False
+  gen_ppl_eval_model_name_or_path: gpt2-large
+  generate_samples: True
+
+# Optimizer settings
+optim:
+  weight_decay: 0
+  lr: 3e-4
+  beta1: 0.9
+  beta2: 0.999
+  eps: 1e-8
+
+# Trainer settings - 500K steps max
+trainer:
+  _target_: lightning.Trainer
+  accelerator: cuda
+  num_nodes: 1
+  devices: ${device_count:}
+  accumulate_grad_batches: 1
+  gradient_clip_val: 1.0
+  precision: 'bf16'
+  num_sanity_val_steps: 2
+  max_steps: 500000  # 500K steps = ~262B tokens
+  log_every_n_steps: 100
+  limit_train_batches: 1.0
+  limit_val_batches: 1.0
+  val_check_interval: 50000  # Validation every 50K steps
+
+# Noise settings
+noise: loglinear
+
+# LR scheduler settings
+lr_scheduler: cosine_decay_warmup
+
+# Checkpointing
+checkpoint:
+  save_top_k: 3  # Keep top 3 checkpoints
+  save_interval: 50000  # Save every 50K steps
+  resume_from_checkpoint: null
+
+# Logging
+wandb:
+  project: "mdlm-atat-phase1a"
+  entity: null  # Set to your entity if needed
+  tags: ["phase1a", "ablation"]
+  notes: "Phase 1A: Importance Estimator Variants"

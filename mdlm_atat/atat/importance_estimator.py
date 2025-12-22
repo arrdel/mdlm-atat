@@ -31,6 +31,11 @@ class ImportanceEstimator(nn.Module):
         num_layers: Number of transformer layers for context-aware importance
         max_seq_length: Maximum sequence length
         dropout: Dropout rate
+        mode: Importance estimation mode:
+            - "full": Hybrid (0.7 * learned + 0.3 * frequency_prior)
+            - "learned_only": Only transformer-learned weights
+            - "frequency_only": Only frequency prior, no learned component
+            - "none": No importance, uniform masking baseline
     """
     
     def __init__(
@@ -40,45 +45,54 @@ class ImportanceEstimator(nn.Module):
         num_layers: int = 2,
         max_seq_length: int = 1024,
         dropout: float = 0.1,
+        mode: str = "full",
     ):
         super().__init__()
         self.vocab_size = vocab_size
         self.hidden_dim = hidden_dim
+        self.mode = mode
         
-        # Token embedding for importance estimation
-        self.token_embed = nn.Embedding(vocab_size, hidden_dim)
+        # Validate mode
+        valid_modes = ["full", "learned_only", "frequency_only", "none"]
+        if mode not in valid_modes:
+            raise ValueError(f"Invalid importance_mode: {mode}. Must be one of {valid_modes}")
         
-        # Positional encoding
-        self.pos_embed = nn.Embedding(max_seq_length, hidden_dim)
-        
-        # Context-aware importance estimation using small transformer
-        encoder_layer = nn.TransformerEncoderLayer(
-            d_model=hidden_dim,
-            nhead=4,
-            dim_feedforward=hidden_dim * 4,
-            dropout=dropout,
-            batch_first=True,
-        )
-        self.transformer = nn.TransformerEncoder(
-            encoder_layer,
-            num_layers=num_layers,
-        )
-        
-        # Output projection to importance scores
-        self.importance_head = nn.Sequential(
-            nn.LayerNorm(hidden_dim),
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.GELU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim // 2, 1),
-            nn.Sigmoid(),  # Importance scores in [0, 1]
-        )
-        
-        # Optional: Token frequency prior (can be updated during training)
+        # Token frequency prior (can be updated during training)
         self.register_buffer(
             'token_frequency_prior',
             torch.ones(vocab_size) / vocab_size
         )
+        
+        # Only create learned components if needed
+        if mode in ["full", "learned_only"]:
+            # Token embedding for importance estimation
+            self.token_embed = nn.Embedding(vocab_size, hidden_dim)
+            
+            # Positional encoding
+            self.pos_embed = nn.Embedding(max_seq_length, hidden_dim)
+            
+            # Context-aware importance estimation using small transformer
+            encoder_layer = nn.TransformerEncoderLayer(
+                d_model=hidden_dim,
+                nhead=4,
+                dim_feedforward=hidden_dim * 4,
+                dropout=dropout,
+                batch_first=True,
+            )
+            self.transformer = nn.TransformerEncoder(
+                encoder_layer,
+                num_layers=num_layers,
+            )
+            
+            # Output projection to importance scores
+            self.importance_head = nn.Sequential(
+                nn.LayerNorm(hidden_dim),
+                nn.Linear(hidden_dim, hidden_dim // 2),
+                nn.GELU(),
+                nn.Dropout(dropout),
+                nn.Linear(hidden_dim // 2, 1),
+                nn.Sigmoid(),  # Importance scores in [0, 1]
+            )
         
     def forward(
         self,
@@ -101,6 +115,26 @@ class ImportanceEstimator(nn.Module):
         batch_size, seq_length = x.shape
         device = x.device
         
+        # Mode 1: No importance (uniform masking baseline)
+        if self.mode == "none":
+            # Return uniform importance (all tokens equally important)
+            importance = torch.ones(batch_size, seq_length, device=device) * 0.5
+            if attention_mask is not None:
+                importance = importance * attention_mask
+            return (importance, None) if return_context else importance
+        
+        # Mode 2 & 3: Compute frequency prior (used in both hybrid and frequency-only modes)
+        freq_prior = 1.0 - torch.log(self.token_frequency_prior[x] + 1e-10)
+        freq_prior = freq_prior / (freq_prior.max() + 1e-10)
+        
+        # Mode: Frequency-only (no learned component)
+        if self.mode == "frequency_only":
+            importance = freq_prior
+            if attention_mask is not None:
+                importance = importance * attention_mask
+            return (importance, None) if return_context else importance
+        
+        # Mode: Learned-only or Full (compute learned importance)
         # Get token embeddings
         token_emb = self.token_embed(x)  # (B, L, D)
         
@@ -120,16 +154,15 @@ class ImportanceEstimator(nn.Module):
             
         context = self.transformer(h, src_key_padding_mask=attn_mask)
         
-        # Compute importance scores
-        importance = self.importance_head(context).squeeze(-1)  # (B, L)
+        # Compute learned importance scores
+        learned_importance = self.importance_head(context).squeeze(-1)  # (B, L)
         
-        # Optional: Incorporate token frequency prior
-        # Rare tokens are generally more important
-        freq_prior = 1.0 - torch.log(self.token_frequency_prior[x] + 1e-10)
-        freq_prior = freq_prior / freq_prior.max()
-        
-        # Combine learned importance with frequency prior
-        importance = 0.7 * importance + 0.3 * freq_prior
+        # Mode: Learned-only
+        if self.mode == "learned_only":
+            importance = learned_importance
+        # Mode: Full (hybrid)
+        elif self.mode == "full":
+            importance = 0.7 * learned_importance + 0.3 * freq_prior
         
         # Mask out padding tokens
         if attention_mask is not None:
@@ -174,13 +207,16 @@ class AdaptiveImportanceEstimator(ImportanceEstimator):
     
     Early timesteps (t → 1): More uniform importance (explore broadly)
     Late timesteps (t → 0): Sharp importance distinctions (focus on hard tokens)
+    
+    Supports the same 4 modes as ImportanceEstimator:
+    - "full", "learned_only", "frequency_only", "none"
     """
     
     def __init__(self, *args, time_conditioning: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
         self.time_conditioning = time_conditioning
         
-        if time_conditioning:
+        if time_conditioning and self.mode in ["full", "learned_only"]:
             # Time embedding for adaptive importance
             self.time_embed = nn.Sequential(
                 nn.Linear(1, self.hidden_dim),
