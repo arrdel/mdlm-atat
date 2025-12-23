@@ -63,12 +63,11 @@ datasets/
 tmp/
 temp/
 .archive/
+.trash/
 
 # Model checkpoints (too large for git)
 *.safetensors
 model_*.bin
-
-.trash/
 docs/archived_report
 docs/archived_latex
 docs/figures
