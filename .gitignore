@@ -68,7 +68,7 @@ temp/
 *.safetensors
 model_*.bin
 
-trash/
+.trash/
 docs/archived_report
 docs/archived_latex
 docs/figures
