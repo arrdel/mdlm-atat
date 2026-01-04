@@ -1,10 +1,25 @@
 # @package _global_
 # Phase 1A: Importance Estimator Variants - Base Configuration
 # This is a base config used by all 4 variant configurations
-# Variants override the importance_mode parameter
+# Variants      resume_ckpt_path: ${.save_dir}/checkpoints/last.ckpt
+
+# WandB logging configuration - set name to null to disable
+wandb:
+  project: text-diffusion
+  notes: ATAT Importance Estimator
+  group: null
+  job_type: null
+  name: null
+  id: null
+  tags: []
+
+# Hydra settings for outputsthe importance_mode parameter
 
 defaults:
-  - /lr_scheduler: cosine_decay_warmup
+  - /noise: loglinear
+  - /strategy: ddp
+  - /lr_scheduler: constant_warmup
+  - _self_
 
 # Basic settings (production-scale)
 mode: train
@@ -16,9 +31,10 @@ T: 0
 subs_masking: False
 seed: 42  # Fixed seed for reproducibility
 
-# Data configuration - OpenWebText for training, WikiText103 for validation
+# Data configuration - wikitext103 for fast testing (DEBUG mode)
+# Using wikitext103 for both training and validation (quick testing)
 data:
-  train: openwebtext
+  train: wikitext103
   valid: wikitext103
   tokenizer_name_or_path: gpt2
   cache_dir: /media/scratch/adele/mdlm_fresh/data_cache
@@ -81,7 +97,7 @@ loader:
   eval_global_batch_size: ${.global_batch_size}
   batch_size: 64  # Per-GPU batch size (512 / 8 GPUs = 64)
   eval_batch_size: 64
-  num_workers: ${eval:"len(__import__('os').sched_getaffinity(0))"}
+  num_workers: 4  # Use 4 workers to avoid multiprocessing issues
   pin_memory: True
 
 # Sampling settings
@@ -113,7 +129,7 @@ optim:
   beta2: 0.999
   eps: 1e-8
 
-# Trainer settings - 500K steps max
+# Trainer settings - DEBUG: 5K steps for quick testing
 trainer:
   _target_: lightning.Trainer
   accelerator: cuda
@@ -123,17 +139,11 @@ trainer:
   gradient_clip_val: 1.0
   precision: 'bf16'
   num_sanity_val_steps: 2
-  max_steps: 500000  # 500K steps = ~262B tokens
+  max_steps: 5000  # 5K steps = ~500M tokens (small dataset)
   log_every_n_steps: 100
   limit_train_batches: 1.0
   limit_val_batches: 1.0
-  val_check_interval: 50000  # Validation every 50K steps
-
-# Noise settings
-noise: loglinear
-
-# LR scheduler settings
-lr_scheduler: cosine_decay_warmup
+  val_check_interval: 500  # Validation every 500 steps
 
 # Callbacks for checkpointing
 callbacks:
@@ -154,12 +164,12 @@ checkpointing:
   resume_from_ckpt: false
   resume_ckpt_path: ${.save_dir}/checkpoints/last.ckpt
 
-# Logging
-wandb:
-  project: "mdlm-atat-importance-ablation"
-  entity: null  # Set to your entity if needed
-  tags: ["importance_ablation", "ablation"]
-  notes: "Importance Estimator Variants Ablation Study"
+# Logging - Disabled for debugging
+# wandb:
+#   project: "mdlm-atat-phase1a"
+#   entity: null  # Set to your entity if needed
+#   tags: ["phase1a", "ablation", "full"]
+#   notes: "Full ATAT with learned importance + frequency prior (0.7/0.3)"
 
 # Hydra settings for outputs
 hydra:

@@ -4,7 +4,7 @@
 # Tests: Contextual importance learned by transformer
 
 defaults:
-  - importance_ablation_base
+  - importance_estimator_base
   - _self_
 
 # Override key parameters for this variant
@@ -12,7 +12,7 @@ model:
   importance_mode: "learned_only"  # Only transformer-learned weights, no frequency prior
 
 trainer:
-  max_steps: 500000
+  max_steps: 5000  # DEBUG: 5K steps
 
 # Logging configuration
 wandb:

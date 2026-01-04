@@ -4,7 +4,7 @@
 # Tests: Whether adaptive masking concept is sound
 
 defaults:
-  - importance_ablation_base
+  - importance_estimator_base
   - _self_
 
 # Override key parameters for this variant
@@ -15,7 +15,7 @@ model:
   use_curriculum: false  # Uniform curriculum
 
 trainer:
-  max_steps: 500000
+  max_steps: 5000  # DEBUG: 5K steps
 
 # Logging configuration
 wandb:

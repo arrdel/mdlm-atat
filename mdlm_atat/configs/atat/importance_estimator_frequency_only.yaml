@@ -4,7 +4,7 @@
 # Tests: Statistical token frequency as importance baseline
 
 defaults:
-  - importance_ablation_base
+  - importance_estimator_base
   - _self_
 
 # Override key parameters for this variant
@@ -15,7 +15,7 @@ model:
   importance_num_layers: 0  # Could set to 0 or just not use it
 
 trainer:
-  max_steps: 500000
+  max_steps: 5000  # DEBUG: 5K steps
 
 # Logging configuration
 wandb:

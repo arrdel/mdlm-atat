@@ -3,7 +3,7 @@
 # Expected PPL: 39.03 (baseline)
 
 defaults:
-  - importance_ablation_base
+  - importance_estimator_base
   - _self_
 
 # Override key parameters for this variant
@@ -11,11 +11,4 @@ model:
   importance_mode: "full"  # Hybrid: 0.7 * learned + 0.3 * frequency_prior
 
 trainer:
-  max_steps: 500000
-
-# Logging configuration
-wandb:
-  project: "mdlm-atat-phase1a"
-  run_name: "phase1a-full-atat"
-  tags: ["phase1a", "ablation", "full"]
-  notes: "Full ATAT with learned importance + frequency prior (0.7/0.3)"
+  max_steps: 5000  # DEBUG: 5K steps

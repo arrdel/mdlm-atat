@@ -33,7 +33,7 @@ model:
   model_type: dit_diffusion
   
 training:
-  max_steps: 500000
+  max_steps: 5000  # DEBUG: 5K steps
   
   curriculum_schedule:
     type: early

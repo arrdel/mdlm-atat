@@ -50,21 +50,7 @@ model:
 
 # Training configuration
 trainer:
-  max_steps: 500000
-  batch_size: 256
-  learning_rate: 0.0001
-  warmup_steps: 5000
-  
-  # Gradient accumulation for larger effective batch size
-  gradient_accumulation_steps: 1
-  
-  # Checkpointing
-  save_every: 10000
-  keep_best_k: 5
-  
-  # Validation
-  eval_every: 5000
-  eval_steps: 100
+  max_steps: 5000  # DEBUG: 5K steps
 
 # Optimizer configuration
 optimizer:
@@ -75,7 +61,7 @@ optimizer:
 # Logging configuration
 wandb:
   project: "mdlm-atat-phase1b"
-  run_name: "phase1b-masking-time-only"
+  name: "phase1b-masking-time-only"
   tags: ["phase1b", "ablation", "masking", "control", "baseline"]
   notes: "Phase 1B: Time-only masking (control baseline) - validates the importance of adaptive masking"
   config:
