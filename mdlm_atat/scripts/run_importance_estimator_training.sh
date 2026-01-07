@@ -40,8 +40,6 @@ DATASET_PRESET="debug"
 MAX_STEPS=500000
 NUM_GPUS=2
 BATCH_SIZE=256
-LEARNING_RATE=0.001
-WARMUP_STEPS=10000
 OUTPUT_DIR=""
 RESUME=false
 USE_WANDB=false
@@ -73,14 +71,6 @@ parse_arguments() {
                 ;;
             --batch-size)
                 BATCH_SIZE="$2"
-                shift 2
-                ;;
-            --learning-rate)
-                LEARNING_RATE="$2"
-                shift 2
-                ;;
-            --warmup-steps)
-                WARMUP_STEPS="$2"
                 shift 2
                 ;;
             --output-dir)
@@ -126,8 +116,6 @@ Options:
     --max-steps STEPS            Maximum training steps [default: 500000]
     --num-gpus NUM               Number of GPUs [default: 2]
     --batch-size SIZE            Batch size [default: 256]
-    --learning-rate LR           Learning rate [default: 0.001]
-    --warmup-steps STEPS         Warmup steps [default: 10000]
     --output-dir DIR             Output directory for checkpoints
     --resume                     Resume from checkpoint
     --use-wandb                  Enable Weights & Biases logging
@@ -177,12 +165,27 @@ main() {
         exit 1
     fi
 
+    # Adjust batch size based on dataset preset if not explicitly set
+    if [ "$BATCH_SIZE" == "256" ]; then  # Only if using default batch size
+        case $DATASET_PRESET in
+            debug)
+                BATCH_SIZE=8
+                ;;
+            validation)
+                BATCH_SIZE=32
+                ;;
+            production)
+                BATCH_SIZE=256
+                ;;
+        esac
+    fi
+
     # Construct Python command
     PYTHON_CMD="python $SCRIPT_DIR/training/train_importance_estimator.py"
     
     # Add arguments
     if [ "$ALL_VARIANTS" = true ]; then
-        PYTHON_CMD="$PYTHON_CMD --all-variants"
+        PYTHON_CMD="$PYTHON_CMD --all"
     else
         PYTHON_CMD="$PYTHON_CMD --variant $VARIANT"
     fi
@@ -191,8 +194,6 @@ main() {
     PYTHON_CMD="$PYTHON_CMD --max-steps $MAX_STEPS"
     PYTHON_CMD="$PYTHON_CMD --num-gpus $NUM_GPUS"
     PYTHON_CMD="$PYTHON_CMD --batch-size $BATCH_SIZE"
-    PYTHON_CMD="$PYTHON_CMD --learning-rate $LEARNING_RATE"
-    PYTHON_CMD="$PYTHON_CMD --warmup-steps $WARMUP_STEPS"
 
     if [ ! -z "$OUTPUT_DIR" ]; then
         PYTHON_CMD="$PYTHON_CMD --output-dir $OUTPUT_DIR"
@@ -213,8 +214,6 @@ main() {
     echo "  Dataset preset:    $DATASET_PRESET"
     echo "  Max steps:         $MAX_STEPS"
     echo "  Batch size:        $BATCH_SIZE"
-    echo "  Learning rate:     $LEARNING_RATE"
-    echo "  Warmup steps:      $WARMUP_STEPS"
     echo "  Number of GPUs:    $NUM_GPUS"
     echo "  WandB logging:     $([ "$USE_WANDB" = true ] && echo "Enabled" || echo "Disabled")"
     echo ""

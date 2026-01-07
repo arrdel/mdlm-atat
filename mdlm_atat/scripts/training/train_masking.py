@@ -53,7 +53,7 @@ from typing import Dict, List, Optional, Tuple
 import datetime
 import os
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 
 # Import dataset manager
 try:
@@ -66,28 +66,28 @@ except ImportError:
 # Define all 4 masking strategy variants
 STRATEGIES = {
     "balanced": {
-        "config_file": "masking_strategy_balanced.yaml",
+        "config_file": "masking_balanced.yaml",
         "description": "Balanced strategy: (1-t)*g_inv + t*g_prop",
         "formula": "Early: preserve important, Late: focus on important",
         "expected_ppl": 39.03,
         "notes": "Our proposed strategy - balances curriculum with importance",
     },
     "proportional": {
-        "config_file": "masking_strategy_proportional.yaml",
+        "config_file": "masking_proportional.yaml",
         "description": "Importance-Proportional: Always mask important tokens more",
         "formula": "g_prop(i,t) = 0.7*i + 0.3*(1-t)",
         "expected_ppl": 39.87,
         "notes": "May lead to overtrain on easy tokens, undertrain on hard",
     },
     "inverse": {
-        "config_file": "masking_strategy_inverse.yaml",
+        "config_file": "masking_inverse.yaml",
         "description": "Importance-Inverse: Always preserve important tokens",
         "formula": "g_inv(i,t) = 0.7*(1-i) + 0.3*t",
         "expected_ppl": 40.21,
         "notes": "May lead to undertrain on important tokens early",
     },
     "time_only": {
-        "config_file": "masking_strategy_time_only.yaml",
+        "config_file": "masking_time_only.yaml",
         "description": "Time-Only (control): Uniform masking, no importance signal",
         "formula": "g_time(i,t) = f(t)  (importance ignored)",
         "expected_ppl": 42.31,
@@ -204,11 +204,9 @@ class MaskingStrategyTrainer:
         print(f"Command: {' '.join(cmd)}\n")
 
         try:
-            # Run in subprocess with conda environment activation
-            conda_cmd = f"conda run -n mdlm-atat {' '.join(cmd)}"
+            # Run in subprocess - conda environment already active
             result = subprocess.run(
-                conda_cmd,
-                shell=True,
+                cmd,
                 cwd=str(PROJECT_ROOT),
                 capture_output=False,
                 text=True,
@@ -245,17 +243,18 @@ class MaskingStrategyTrainer:
         output_dir: Path,
     ) -> List[str]:
         """Build training command for a strategy variant"""
-        config_path = PROJECT_ROOT / "mdlm_atat" / "configs" / "atat" / config_file
+        # Extract config name without .yaml extension
+        config_name = f"atat/{config_file.replace('.yaml', '')}"
 
         cmd = [
             "python",
             str(PROJECT_ROOT / "mdlm_atat" / "scripts" / "training" / "train_atat.py"),
-            f"--config={config_path}",
-            f"--output={output_dir}",
+            f"--config-name={config_name}",
+            f"--output-dir={output_dir}",
             f"--max-steps={self.max_steps}",
             f"--batch-size={self.batch_size}",
             f"--num-gpus={self.num_gpus}",
-            f"--dataset-preset={self.dataset_preset}",
+            "--no-confirm",  # Skip confirmation prompt for automated runs
         ]
 
         # Add optional arguments

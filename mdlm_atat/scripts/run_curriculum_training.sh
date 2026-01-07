@@ -43,8 +43,6 @@ DATASET_PRESET="debug"
 MAX_STEPS=500000
 NUM_GPUS=2
 BATCH_SIZE=256
-LEARNING_RATE=0.001
-WARMUP_STEPS=10000
 OUTPUT_DIR=""
 RESUME=false
 USE_WANDB=false
@@ -76,14 +74,6 @@ parse_arguments() {
                 ;;
             --batch-size)
                 BATCH_SIZE="$2"
-                shift 2
-                ;;
-            --learning-rate)
-                LEARNING_RATE="$2"
-                shift 2
-                ;;
-            --warmup-steps)
-                WARMUP_STEPS="$2"
                 shift 2
                 ;;
             --output-dir)
@@ -129,8 +119,6 @@ Options:
     --max-steps STEPS          Maximum training steps [default: 500000]
     --num-gpus NUM             Number of GPUs [default: 2]
     --batch-size SIZE          Batch size [default: 256]
-    --learning-rate LR         Learning rate [default: 0.001]
-    --warmup-steps STEPS       Warmup steps [default: 10000]
     --output-dir DIR           Output directory for checkpoints
     --resume                   Resume from checkpoint
     --use-wandb                Enable Weights & Biases logging

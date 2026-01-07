@@ -55,7 +55,7 @@ from typing import Dict, List, Optional
 import datetime
 import os
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 
 # Import dataset manager
 try:
@@ -256,17 +256,17 @@ class CurriculumScheduleTrainer:
         output_dir: Path,
     ) -> List[str]:
         """Build training command for a schedule variant"""
-        config_path = PROJECT_ROOT / "mdlm_atat" / "configs" / "atat" / config_file
+        # Extract config name without .yaml extension
+        config_name = f"atat/{config_file.replace('.yaml', '')}"
 
         cmd = [
             "python",
             str(PROJECT_ROOT / "mdlm_atat" / "scripts" / "training" / "train_atat.py"),
-            f"--config={config_path}",
-            f"--output={output_dir}",
+            f"--config-name={config_name}",
+            f"--output-dir={output_dir}",
             f"--max-steps={self.max_steps}",
             f"--batch-size={self.batch_size}",
             f"--num-gpus={self.num_gpus}",
-            f"--dataset-preset={self.dataset_preset}",
         ]
 
         # Add optional arguments

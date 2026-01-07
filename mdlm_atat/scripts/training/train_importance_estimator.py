@@ -42,7 +42,7 @@ from typing import List, Optional
 import json
 import datetime
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SCRIPTS_DIR = PROJECT_ROOT / "mdlm_atat" / "scripts" / "training"
 CONFIGS_DIR = PROJECT_ROOT / "mdlm_atat" / "configs" / "atat"
 OUTPUTS_DIR = Path("/media/scratch/adele/mdlm_fresh/outputs/phase1a_ablation")
@@ -50,22 +50,22 @@ OUTPUTS_DIR = Path("/media/scratch/adele/mdlm_fresh/outputs/phase1a_ablation")
 # Define the 4 variants for importance estimator ablation
 VARIANTS = {
     "full": {
-        "config": "importance_ablation_full.yaml",
+        "config": "importance_estimator_full.yaml",
         "description": "Full ATAT (0.7 learned + 0.3 frequency)",
         "expected_ppl": 39.03,
     },
     "frequency_only": {
-        "config": "importance_ablation_frequency_only.yaml",
+        "config": "importance_estimator_frequency_only.yaml",
         "description": "No learned component, frequency-only importance",
         "expected_ppl": 41.87,
     },
     "learned_only": {
-        "config": "importance_ablation_learned_only.yaml",
+        "config": "importance_estimator_learned_only.yaml",
         "description": "No frequency prior, learned-only importance",
         "expected_ppl": 40.12,
     },
     "uniform": {
-        "config": "importance_ablation_uniform.yaml",
+        "config": "importance_estimator_uniform.yaml",
         "description": "No importance weighting (baseline)",
         "expected_ppl": 42.31,
     },
@@ -110,10 +110,10 @@ class ImportanceAblationTrainer:
 
         # Log configuration
         self.log_dir = OUTPUTS_DIR / "logs"
-        self.log_dir.mkdir(exist_ok=True)
+        self.log_dir.mkdir(parents=True, exist_ok=True)
 
         self.checkpoint_dir = OUTPUTS_DIR / "checkpoints"
-        self.checkpoint_dir.mkdir(exist_ok=True)
+        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     def train_variant(self, variant: str, verbose: bool = True) -> bool:
         """

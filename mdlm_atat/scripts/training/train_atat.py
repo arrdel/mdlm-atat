@@ -145,12 +145,22 @@ def main():
             "atat/small", 
             "atat/wikitext103_validation", 
             "atat/production_training",
-            # Importance Ablation Study: Importance Estimator Variants
-            "atat/importance_ablation_base",
-            "atat/importance_ablation_full",
-            "atat/importance_ablation_frequency_only",
-            "atat/importance_ablation_learned_only",
-            "atat/importance_ablation_uniform",
+            # Phase 1A: Importance Estimator Variants
+            "atat/importance_estimator_base",
+            "atat/importance_estimator_full",
+            "atat/importance_estimator_frequency_only",
+            "atat/importance_estimator_learned_only",
+            "atat/importance_estimator_uniform",
+            # Phase 1B: Masking Strategies
+            "atat/masking_balanced",
+            "atat/masking_proportional",
+            "atat/masking_inverse",
+            "atat/masking_time_only",
+            # Phase 1C: Curriculum Schedules
+            "atat/curriculum_default",
+            "atat/curriculum_early",
+            "atat/curriculum_late",
+            "atat/curriculum_no_curriculum",
         ],
         help="Model configuration"
     )
@@ -264,27 +274,53 @@ def main():
     print(f"  {Colors.CYAN}GPUs:{Colors.NC}   watch -n 1 nvidia-smi")
     print(f"  {Colors.CYAN}WandB:{Colors.NC}  https://wandb.ai\n")
     
-    # Change to project directory
-    project_dir = Path(__file__).parent.parent
+    # Get absolute paths to project directories
+    script_dir = Path(__file__).parent  # /home/adelechinda/home/projects/mdlm/mdlm_atat/scripts/training
+    atat_dir = script_dir.parent.parent  # /home/adelechinda/home/projects/mdlm/mdlm_atat
+    project_dir = atat_dir.parent  # /home/adelechinda/home/projects/mdlm
+    
     os.chdir(project_dir)
     
     # Build training command (use sys.executable to ensure same Python environment)
-    # NOTE: get_dataloaders() uses torch.cuda.device_count() (ALL GPUs) not trainer.devices
-    # So global_batch_size must account for ALL available GPUs, not just trainer.devices
+    # NOTE: The dataloader assertion uses torch.cuda.device_count() (ALL GPUs), not trainer.devices
+    # So we must calculate global_batch_size based on ALL available GPUs to pass the assertion
+    # However, trainer.devices is set to requested num_gpus for actual DDP distribution
     num_total_gpus = check_gpus()
-    global_batch_size = args.batch_size * 1 * num_total_gpus * 1  # num_nodes=1, accumulation=1, using ALL GPUs
+    
+    # If requesting fewer GPUs than available, we still need to calculate batch size for ALL GPus
+    # to pass the assertion, but the actual training will only use trainer.devices
+    # This means some compute will be unused (batch is prepared for 6 GPUs but only 2 are trained on)
+    # as a workaround, we can reduce batch_size per GPU proportionally
+    # actual_global_batch_size = args.batch_size * args.num_gpus
+    # but assertion requires: args.batch_size * num_total_gpus
+    # So we need to reduce per-GPU batch size if using fewer than all GPUs
+    
+    if args.num_gpus < num_total_gpus:
+        # Adjust batch size to be compatible with all GPUs while training on subset
+        # Scale down per-GPU batch size by ratio of requested GPUs to total GPUs
+        adjusted_batch_size = max(1, int(args.batch_size * args.num_gpus / num_total_gpus))
+        global_batch_size = adjusted_batch_size * num_total_gpus
+    else:
+        adjusted_batch_size = args.batch_size
+        global_batch_size = args.batch_size * num_total_gpus
+    
+    # Eval batch size should be smaller or equal to training batch size
+    eval_batch_size = max(1, adjusted_batch_size // 2) if adjusted_batch_size > 2 else adjusted_batch_size
+    eval_global_batch_size = eval_batch_size * num_total_gpus
     
     cmd = [
-        sys.executable, "../mdlm/main.py",
-        "--config-path", "../mdlm_atat/configs",
+        sys.executable, "-m", "mdlm.main",
+        "--config-path", str(atat_dir / "configs"),
         "--config-name", args.config_name,
         f"trainer.max_steps={args.max_steps}",
         f"trainer.val_check_interval={args.val_interval}",
         f"trainer.log_every_n_steps={args.log_interval}",
         "trainer.accelerator=cuda",
-        f"trainer.devices={args.num_gpus}",
-        f"loader.batch_size={args.batch_size}",
-        f"loader.global_batch_size={global_batch_size}",  # Use ALL GPUs in calculation
+        f"trainer.devices={args.num_gpus}",  # Use requested GPUs for training
+        f"loader.batch_size={adjusted_batch_size}",  # Adjusted batch size
+        f"loader.global_batch_size={global_batch_size}",  # Total for all available GPUs
+        f"loader.eval_batch_size={eval_batch_size}",  # Eval batch size (smaller for memory)
+        f"loader.eval_global_batch_size={eval_global_batch_size}",  # Eval total
         f"optim.lr={args.learning_rate}",
         f"data.cache_dir={args.cache_dir}",
         f"hydra.run.dir={args.output_dir}/${{data.train}}/${{now:%Y.%m.%d}}/${{now:%H%M%S}}",
