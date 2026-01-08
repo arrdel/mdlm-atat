@@ -149,9 +149,12 @@ def _train(config, logger, tokenizer):
   logger.info('Starting Training.')
   wandb_logger = None
   if config.get('wandb', None) is not None:
+    # Separate the config dict from other wandb parameters to avoid conflict
+    wandb_config = omegaconf.OmegaConf.to_object(config.wandb)
+    wandb_experiment_config = wandb_config.pop('config', omegaconf.OmegaConf.to_object(config))
     wandb_logger = L.pytorch.loggers.WandbLogger(
-      config=omegaconf.OmegaConf.to_object(config),
-      ** config.wandb)
+      config=wandb_experiment_config,
+      **wandb_config)
 
   if (config.checkpointing.resume_from_ckpt
       and config.checkpointing.resume_ckpt_path is not None
